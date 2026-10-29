@@ -276,8 +276,37 @@ Em todas as edições houve **pelo menos uma discursiva de algoritmos ou program
 
 ---
 
-## 7. Notas de metodologia
+## 7. Guia de estudos semanal
 
-- Cada questão recebeu **uma única área**, a principal. Questões interdisciplinares foram classificadas pelo conteúdo exigido para respondê-las. Exemplos: "circuito como grafo" (2023 Q13) entrou em Circuitos, porque o que se cobra é a lei de Kirchhoff; o algoritmo de desvio-padrão (2019 Q32) entrou em Estatística.
-- Os casos de fronteira mais discutíveis: virtualização (2017 Q29, 2023 Q27), contada em Sistemas Distribuídos e não em SO; usabilidade/inteligibilidade (2019 Q35), contada em Engenharia de Software (qualidade de software, ISO 9126) e não em IHC; neutralidade da rede (2014 Q19), contada em Ética/Legislação e não em Redes.
-- Os PDFs de 2014 e 2017 usam fonte com codificação própria, e a extração direta gerava texto ilegível. O texto foi decodificado (mapeamento de glifos da fonte Calibri) e extraído coluna a coluna antes da classificação. Os textos extraídos estão em `provas/cols/`.
+Plano de **4 semanas de estudo e 1 de simulado**. As quatro semanas cobrem 144 das 160 questões das quatro provas: 104 itens do Componente Específico e os 40 da Formação Geral. As áreas seguem a ordem de prioridade do formato atual (seção 3, perfil 2019 + 2023). Os 16 itens do núcleo comum de engenharia, que não aparece desde 2019, ficaram como opcionais.
+
+O ritmo é de cerca de 36 questões por semana, ou 5 a 6 por dia.
+
+Como usar:
+
+- Resolva as questões de cada semana **na ordem cronológica** (2014 → 2023), para terminar pelas mais parecidas com a próxima prova.
+- Antes das questões, revise a teoria da área. Depois, confira no gabarito e anote o motivo de cada erro.
+- Nas discursivas (D), escreva a resposta completa, com código em C ou pseudocódigo quando pedido, antes de ver o padrão de resposta.
+- Questões marcadas com \* foram anuladas. Resolva assim mesmo, porque mostram o que a banca queria cobrar.
+
+### Componente Específico
+
+| Semana | Áreas | 2014 | 2017 | 2019 | 2023 | Itens |
+|:------:|-------|------|------|------|------|:-----:|
+| 1 | Algoritmos e Programação, Estruturas de Dados, Teoria da Computação, Matemática Discreta / Grafos / PO | D3, Q14, Q15, Q22, Q29, Q32, Q35 | D3, Q21, Q22, Q26, Q28 | D3, D4, Q09, Q11, Q12, Q23, Q25 | D2, Q12, Q14, Q15, Q17, Q18, Q19 | 26 |
+| 2 | Circuitos e Eletrônica, Sistemas Digitais, Arquitetura de Computadores, Sistemas Embarcados, Sistemas Operacionais | D5, Q10, Q23, Q28, Q30\* | D4, D5, Q19, Q20 | D5, Q16, Q17, Q28, Q31, Q33, Q34 | Q10, Q13, Q16, Q23, Q24, Q25, Q26, Q28, Q30, Q36 | 26 |
+| 3 | Redes, Segurança da Informação, Sistemas Distribuídos / Nuvem / IoT, Inteligência Artificial | D4, Q24, Q26, Q31 | Q24, Q25, Q27, Q29, Q35 | Q10, Q18, Q19, Q22, Q24, Q29, Q30 | Q11, Q20, Q27, Q29, Q32, Q34, Q35, Q37, Q38 | 25 |
+| 4 | Sinais e PDS, Controle, Matemática, Probabilidade e Estatística, Engenharia de Software, Banco de Dados, IHC, Computação Gráfica | Q09, Q20, Q21, Q25, Q27\*, Q34\* | Q12, Q16, Q17, Q23, Q31, Q32, Q33, Q34 | Q13, Q14, Q15, Q20, Q21, Q26, Q27, Q32, Q35 | Q21, Q22, Q31, Q33 | 27 |
+| Opcional | Núcleo de engenharia: Física, Materiais, Meio Ambiente / Gestão, Ética e Legislação | Q11, Q12, Q13, Q16, Q17, Q18, Q19, Q33 | Q09, Q10, Q11, Q13, Q14, Q15, Q18, Q30 | — | — | 16 |
+| | **Total** | **30** | **30** | **30** | **30** | **120** |
+
+### Formação Geral
+
+A Formação Geral é igual para todos os cursos e não depende de conteúdo técnico. Ela entra junto com as semanas 1 a 4, com uma prova inteira (10 itens) por semana:
+
+| Semana | Prova | Questões |
+|:------:|:-----:|----------|
+| 1 | 2014 | D1, D2, Q01–Q08 |
+| 2 | 2017 | D1, D2, Q01–Q08 |
+| 3 | 2019 | D1, D2, Q01\*–Q08 |
+| 4 | 2023 | D1, Q01–Q09 |
