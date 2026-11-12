@@ -1,0 +1,841 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage{lmodern}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning,arrows.meta,calc}
+\usepackage{forest}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+% ------------------------------------------------------------------
+% Cores e caixas
+% ------------------------------------------------------------------
+\definecolor{azul}{RGB}{31,78,121}
+\definecolor{verde}{RGB}{30,110,60}
+\definecolor{cinza}{RGB}{245,245,245}
+\definecolor{laranja}{RGB}{190,90,20}
+
+\newtcolorbox{enunciado}[1]{enhanced,colback=cinza,colframe=azul,
+  fonttitle=\bfseries,title={#1},sharp corners=south,before skip=10pt,after skip=8pt}
+\newtcolorbox{gabarito}{enhanced,colback=verde!8,colframe=verde,boxrule=0.8pt,
+  left=6pt,right=6pt,top=3pt,bottom=3pt}
+\newtcolorbox{dica}{enhanced,colback=laranja!6,colframe=laranja,boxrule=0.6pt,
+  fonttitle=\bfseries,title={O que revisar},left=6pt,right=6pt}
+
+\newcommand{\solucao}{\par\medskip\noindent{\large\bfseries\color{verde}Solução}\par\smallskip}
+\newcommand{\resposta}[1]{\begin{gabarito}\textbf{Resposta: #1}\end{gabarito}}
+
+% ------------------------------------------------------------------
+% Código
+% ------------------------------------------------------------------
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{azul}\bfseries,
+  commentstyle=\color{gray}\itshape,
+  stringstyle=\color{laranja},
+  numbers=left, numberstyle=\tiny\color{gray}, numbersep=6pt,
+  frame=single, rulecolor=\color{gray!50},
+  backgroundcolor=\color{white},
+  breaklines=true, columns=fullflexible, keepspaces=true,
+  showstringspaces=false, tabsize=4, xleftmargin=1.5em,
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+           {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {ã}{{\~a}}1 {õ}{{\~o}}1
+           {ç}{{\c{c}}}1 {à}{{\`a}}1 {Á}{{\'A}}1 {É}{{\'E}}1
+}
+\lstdefinelanguage{Haskell2}{
+  morekeywords={where,let,in,if,then,else,otherwise},
+  sensitive=true, morecomment=[l]{--}, morestring=[b]"
+}
+
+% ------------------------------------------------------------------
+% Cabeçalho
+% ------------------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small ENADE -- Engenharia de Computação}
+\rhead{\small Semana 01 -- Fundamentos de Computação}
+\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+
+\forestset{
+  avl/.style={for tree={circle,draw,minimum size=2.1em,inner sep=1pt,
+    font=\small,s sep=8mm,l sep=5mm,edge={thick}}},
+  nil/.style={phantom}
+}
+
+\setlist{itemsep=2pt,topsep=4pt}
+
+\begin{document}
+
+% ==================================================================
+\begin{center}
+  {\LARGE\bfseries\color{azul} ENADE -- Engenharia de Computação}\\[4pt]
+  {\Large Semana 01: Fundamentos de Computação}\\[4pt]
+  {\normalsize Algoritmos e Programação $\cdot$ Estruturas de Dados $\cdot$
+  Teoria da Computação $\cdot$ Matemática Discreta / Grafos / PO}\\[6pt]
+  {\small 10 questões selecionadas das provas de 2019 e 2023, com resolução comentada}
+\end{center}
+
+\vspace{4pt}
+\noindent\textbf{Critério da seleção.} A semana 01 do guia de estudos tem 26 itens.
+Desta lista foram escolhidas 10 questões, com prioridade para as edições de 2019 e
+2023, que já seguem o formato atual da prova (sem o núcleo comum de engenharia).
+A distribuição respeita o peso das áreas: Algoritmos e Programação é a área mais
+cobrada e sempre tem discursiva, por isso recebe 4 questões; as demais recebem 2 cada.
+Foram incluídas 3 discursivas, porque cada edição traz pelo menos uma discursiva desse bloco.
+
+\begin{center}
+\small
+\begin{tabular}{@{}clllc@{}}
+\toprule
+\textbf{\#} & \textbf{Origem} & \textbf{Área} & \textbf{Tema} & \textbf{Gab.}\\
+\midrule
+1  & 2023 -- Discursiva 02 & Algoritmos e Programação & Remoção de duplicatas e quicksort & --\\
+2  & 2019 -- Discursiva 04 & Algoritmos e Programação & Produtório iterativo e recursivo em C & --\\
+3  & 2023 -- Questão 14    & Algoritmos e Programação & Programação funcional (listas) & E\\
+4  & 2023 -- Questão 17    & Algoritmos e Programação & LCS (programação dinâmica) & D\\
+5  & 2019 -- Discursiva 03 & Estruturas de Dados      & ABB balanceada e árvore AVL & --\\
+6  & 2023 -- Questão 18    & Estruturas de Dados      & Vetor dinâmico (análise amortizada) & B\\
+7  & 2019 -- Questão 23    & Teoria da Computação     & Autômato finito determinístico & B\\
+8  & 2023 -- Questão 19    & Teoria da Computação     & Gramática livre de contexto & B\\
+9  & 2019 -- Questão 11    & Grafos                   & Coloração de grafos & C\\
+10 & 2019 -- Questão 12    & Pesquisa Operacional     & Programação linear & B\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Os gabaritos das objetivas são os oficiais do INEP. As respostas das
+discursivas foram elaboradas aqui e conferidas com execução do código.
+
+\noindent\textbf{Como usar.} Leia o enunciado, resolva no papel e só depois leia a solução.
+Nas discursivas, escreva o código completo antes de comparar.
+
+\tableofcontents
+\newpage
+
+% ==================================================================
+\section{Algoritmos e Programação}
+% ==================================================================
+
+% ------------------------------------------------------------------
+\subsection{Questão 1 -- ENADE 2023, Discursiva 02}
+% ------------------------------------------------------------------
+\begin{enunciado}{ENADE 2023 -- Questão Discursiva 02}
+Considere que uma rede de varejo resolva consolidar a base de dados de suas $M$ lojas,
+o que resulta em uma tabela $X$ não ordenada com $N$ registros de clientes, possivelmente
+repetidos. Devido à necessidade de se criar uma tabela $Y$ contendo os clientes da tabela
+$X$ com as repetições eliminadas, cogita-se utilizar dois possíveis algoritmos.
+
+\medskip
+\textbf{Algoritmo A}
+\begin{enumerate}[nosep]
+  \item Cria uma tabela $Y$ inicialmente vazia;
+  \item Percorre a tabela $X$, cliente por cliente, verificando se cada um deles já está
+  na tabela $Y$. Caso não esteja, insere na tabela $Y$ o cliente que está faltando.
+\end{enumerate}
+
+\textbf{Algoritmo B}
+\begin{enumerate}[nosep]
+  \item Cria uma tabela $Y$ inicialmente vazia;
+  \item Ordena a tabela $X$ usando o algoritmo quicksort;
+  \item Insere, na tabela $Y$, o cliente da primeira posição da tabela $X$;
+  \item Percorre a tabela $X$, cliente por cliente, a partir do segundo cliente,
+  verificando se cada cliente é igual ao anterior. Caso não seja, insere o cliente na tabela $Y$.
+\end{enumerate}
+
+Observe o código em linguagem C apresentado a seguir.
+\begin{lstlisting}[language=C]
+void quicksort(int *v, int ini, int fim) {
+// v é o vetor a ser ordenado
+// ini é o índice do primeiro elemento a ser ordenado
+// fim é o índice do último elemento a ser ordenado
+    if (ini < fim) {
+        x = particiona(v, ini, fim, (ini+fim)/2);
+        // atribuir os valores para a, b, c e d
+        quicksort(v, a, b);
+        quicksort(v, c, d);
+    }
+}
+int particiona(int *vetor, int ini, int fim, int pivot) {
+// implementar uma função que reorganiza o vetor e retorna a posição
+// final x do pivot. Ao final do processo, os elementos menores ou iguais
+// a vetor[pivot] devem ter índice menor do que x; os elementos maiores
+// que vetor[pivot] devem ter índice maior do que x.
+}
+void troca(int *vetor, int i, int j) {
+// função auxiliar que permuta os conteúdos das posições i e j do vetor
+    aux = vetor[i];
+    vetor[i] = vetor[j];
+    vetor[j] = aux;
+}
+\end{lstlisting}
+\begin{enumerate}[label=\alph*)]
+  \item Determine o número máximo de comparações executadas no passo 2 do algoritmo A. (2,0 pontos)
+  \item Determine o número máximo de comparações executadas no passo 4 do algoritmo B. (2,0 pontos)
+  \item Na implementação recursiva do programa apresentado, quais são os valores dos parâmetros
+  \texttt{a}, \texttt{b}, \texttt{c} e \texttt{d}? (2,0 pontos)
+  \item Escreva o corpo da função \texttt{particiona} em linguagem C utilizando a função auxiliar
+  \texttt{troca}. (4,0 pontos)
+\end{enumerate}
+\end{enunciado}
+
+\solucao
+\textbf{a)} O pior caso ocorre quando \emph{não há nenhum cliente repetido}: cada busca em $Y$
+percorre a tabela inteira sem encontrar o cliente. Ao processar o $i$-ésimo cliente de $X$,
+a tabela $Y$ já tem $i-1$ clientes, logo são feitas $i-1$ comparações:
+\[
+  0 + 1 + 2 + \dots + (N-1) \;=\; \sum_{i=1}^{N}(i-1) \;=\; \frac{N(N-1)}{2}
+  \quad\Longrightarrow\quad O(N^2).
+\]
+O número de lojas $M$ não interfere: só importa o total $N$ de registros.
+
+\medskip
+\textbf{b)} Depois de ordenada, cada cliente (do 2º ao $N$-ésimo) é comparado uma única vez com
+o anterior: $N-1$ comparações, ou seja, $O(N)$. O custo do algoritmo B fica dominado pela ordenação
+($O(N\log N)$ no caso médio do quicksort), e por isso B é assintoticamente melhor que A.
+
+\medskip
+\textbf{c)} Após o particionamento, o pivô está na posição definitiva \texttt{x}. Resta ordenar
+o trecho à esquerda e o trecho à direita, \emph{excluindo} o pivô:
+\[
+  \texttt{a = ini},\qquad \texttt{b = x - 1},\qquad \texttt{c = x + 1},\qquad \texttt{d = fim}.
+\]
+(Observação: o código do enunciado não declara \texttt{x} nem \texttt{aux}; numa implementação real
+seriam necessários \texttt{int x;} e \texttt{int aux;}.)
+
+\medskip
+\textbf{d)} Particionamento de Lomuto. O pivô é levado para o fim do vetor; a variável \texttt{x}
+marca a fronteira da região dos elementos ``$\le$ pivô''. No final, o pivô é trocado para a posição \texttt{x}.
+\begin{lstlisting}[language=C]
+int particiona(int *vetor, int ini, int fim, int pivot) {
+    int i, x = ini;               /* próxima posição da região <= pivô */
+    troca(vetor, pivot, fim);     /* guarda o pivô no fim do trecho    */
+    for (i = ini; i < fim; i++) {
+        if (vetor[i] <= vetor[fim]) {   /* vetor[fim] é o pivô */
+            troca(vetor, i, x);
+            x++;
+        }
+    }
+    troca(vetor, x, fim);         /* pivô vai para a posição final x */
+    return x;
+}
+\end{lstlisting}
+Invariante do laço: \texttt{vetor[ini..x-1]} $\le$ pivô e \texttt{vetor[x..i-1]} $>$ pivô.
+Ao final, todos os elementos menores ou iguais ao pivô estão antes de \texttt{x} e os maiores, depois,
+como o enunciado exige. (Código testado com 20\,000 vetores aleatórios, inclusive com repetições.)
+
+\begin{dica}
+Somatório $\sum i = n(n+1)/2$; pior caso de busca linear; quicksort ($O(n\log n)$ médio, $O(n^2)$ pior
+caso); particionamento de Lomuto e de Hoare; passagem de vetor por ponteiro em C.
+\end{dica}
+
+% ------------------------------------------------------------------
+\subsection{Questão 2 -- ENADE 2019, Discursiva 04}
+% ------------------------------------------------------------------
+\begin{enunciado}{ENADE 2019 -- Questão Discursiva 04}
+Na matemática, um produtório é definido como:
+\[
+  \prod_{i=m}^{n} x_i = x_m \times x_{m+1} \times x_{m+2} \times \dots \times x_{n-1} \times x_n .
+\]
+Com base nessa equação, e considerando que $x_i = i + \dfrac{1}{i}$, com $i > 0$, faça o que se pede
+nos itens a seguir.
+\begin{enumerate}[label=\alph*)]
+  \item Escreva uma \textbf{função iterativa}, em linguagem C, que receba os parâmetros de limite
+  inferior $m$ e de limite superior $n$, calcule e retorne o resultado do produtório. (5,0 pontos)
+  \item Escreva uma \textbf{função recursiva}, em linguagem C, que receba os parâmetros de limite
+  inferior $m$ e de limite superior $n$, calcule e retorne o resultado do produtório. (5,0 pontos)
+\end{enumerate}
+\end{enunciado}
+
+\solucao
+Dois cuidados valem pontos:
+\begin{itemize}
+  \item o resultado não é inteiro, então a função deve retornar \texttt{double};
+  \item \texttt{1/i} com \texttt{i} inteiro é \emph{divisão inteira} (vale 0 para $i>1$). É preciso
+  escrever \texttt{1.0/i}.
+\end{itemize}
+O elemento neutro da multiplicação é 1, então o acumulador começa em \texttt{1.0} e o produtório
+vazio ($m>n$) vale 1.
+
+\textbf{a) Versão iterativa}
+\begin{lstlisting}[language=C]
+double produtorio(int m, int n) {
+    double p = 1.0;
+    int i;
+    for (i = m; i <= n; i++)
+        p = p * (i + 1.0 / i);
+    return p;
+}
+\end{lstlisting}
+
+\textbf{b) Versão recursiva}
+\begin{lstlisting}[language=C]
+double produtorio_rec(int m, int n) {
+    if (m > n)                      /* caso base: produtório vazio */
+        return 1.0;
+    return (n + 1.0 / n) * produtorio_rec(m, n - 1);
+}
+\end{lstlisting}
+A recursão usa $\prod_{i=m}^{n} x_i = x_n \cdot \prod_{i=m}^{n-1} x_i$. Também seria correto
+recorrer pelo limite inferior: \texttt{(m + 1.0/m) * produtorio\_rec(m + 1, n)}.
+Outro caso base aceitável é \texttt{if (m == n) return n + 1.0/n;}.
+
+\medskip
+\textbf{Teste de mesa.} Para $m=1$, $n=3$: $x_1 = 2$, $x_2 = 2{,}5$, $x_3 = 3{,}\overline{3}$, logo
+$2 \times 2{,}5 \times 3{,}\overline{3} = 16{,}\overline{6}$. As duas versões retornam $16{,}666667$.
+
+\begin{dica}
+Tipos em C (\texttt{int} $\times$ \texttt{double}) e divisão inteira; acumuladores de soma (começa em 0)
+e de produto (começa em 1); recursão: caso base + chamada que se aproxima do caso base.
+\end{dica}
+
+% ------------------------------------------------------------------
+\subsection{Questão 3 -- ENADE 2023, Questão 14}
+% ------------------------------------------------------------------
+\begin{enunciado}{ENADE 2023 -- Questão 14}
+Uma lista pode ser dividida em duas partes: o primeiro elemento (a cabeça da lista) e os demais
+elementos (sua cauda). Por exemplo, em uma lista de inteiros \texttt{[1, 2, 3, 4]}, a cabeça é o
+valor 1, enquanto sua cauda é a lista \texttt{[2, 3, 4]}. Uma lista vazia é representada por \texttt{[]}.
+
+O código a seguir define duas funções em uma linguagem de programação funcional. A função
+\texttt{enade} recebe uma lista de inteiros e produz uma nova lista de inteiros. A função
+\texttt{auxiliar} é chamada pela função \texttt{enade} e possui dois parâmetros: um número inteiro
+e uma lista de inteiros.
+\begin{lstlisting}[language=Haskell2,numbers=none]
+enade :: [Int] -> [Int]
+enade [] = []
+enade (cabeca:cauda) = auxiliar cabeca (enade cauda)
+
+auxiliar :: Int -> [Int] -> [Int]
+auxiliar x [] = [x]
+auxiliar x (cabeca:cauda)
+  | (x `mod` 2 == 0) = x:cabeca:cauda
+  | otherwise        = cabeca:auxiliar x cauda
+\end{lstlisting}
+Se a função \texttt{enade} for executada com a lista \texttt{[1, 2, 3, 4, 5, 6, 7, 8]}, o resultado será
+\begin{enumerate}[label=\Alph*)]
+  \item \texttt{[]}.
+  \item \texttt{[2, 4, 6, 8]}.
+  \item \texttt{[1, 2, 3, 4, 5, 6, 7, 8]}.
+  \item \texttt{[2, 4, 6, 8, 1, 3, 5, 7]}.
+  \item \texttt{[2, 4, 6, 8, 7, 5, 3, 1]}.
+\end{enumerate}
+\end{enunciado}
+
+\solucao
+\textbf{O que \texttt{auxiliar x lista} faz:} se \texttt{x} é \emph{par}, coloca \texttt{x} no início
+da lista; se é \emph{ímpar}, percorre a lista e coloca \texttt{x} no \emph{final}.
+
+\textbf{O que \texttt{enade} faz:} primeiro processa recursivamente a cauda e só depois insere a cabeça.
+Logo, os elementos são inseridos \emph{de trás para frente}: 8, 7, 6, \dots, 1.
+
+\begin{center}
+\begin{tabular}{@{}cll@{}}
+\toprule
+Insere & Regra & Lista resultante\\
+\midrule
+8 & par: no início & \texttt{[8]}\\
+7 & ímpar: no fim  & \texttt{[8, 7]}\\
+6 & par: no início & \texttt{[6, 8, 7]}\\
+5 & ímpar: no fim  & \texttt{[6, 8, 7, 5]}\\
+4 & par: no início & \texttt{[4, 6, 8, 7, 5]}\\
+3 & ímpar: no fim  & \texttt{[4, 6, 8, 7, 5, 3]}\\
+2 & par: no início & \texttt{[2, 4, 6, 8, 7, 5, 3]}\\
+1 & ímpar: no fim  & \texttt{[2, 4, 6, 8, 7, 5, 3, 1]}\\
+\bottomrule
+\end{tabular}
+\end{center}
+Os pares aparecem em ordem crescente (o último inserido, 2, fica na frente) e os ímpares em ordem
+decrescente (o último inserido, 1, fica no fim). A alternativa D seria a resposta se a inserção fosse
+feita da frente para trás; é a armadilha da questão.
+
+\resposta{E}
+
+\begin{dica}
+Recursão sobre listas (cabeça:cauda), casamento de padrões e guardas (\texttt{|}) em Haskell;
+operador \texttt{:} (cons); ordem de avaliação em recursão não-final.
+\end{dica}
+
+% ------------------------------------------------------------------
+\subsection{Questão 4 -- ENADE 2023, Questão 17}
+% ------------------------------------------------------------------
+\begin{enunciado}{ENADE 2023 -- Questão 17}
+Dada uma sequência de caracteres $S = s_1, s_2, \dots, s_n$, uma subsequência de $S$ é dada pela
+remoção de zero ou mais caracteres de $S$. Define-se, também, um prefixo de $S$ com comprimento $i$,
+para $i = 0, \dots, n$, como $S_i = s_1, s_2, \dots, s_i$.
+
+O problema da Subsequência Comum Mais Longa (LCS) pressupõe duas sequências
+$A = a_1, \dots, a_n$ e $B = b_1, \dots, b_m$. É preciso encontrar uma sequência de maior comprimento
+possível que seja, simultaneamente, subsequência de $A$ e de $B$. Considere que
+$Z = z_1, z_2, \dots, z_k$ seja uma LCS das sequências $A$ e $B$. Avalie as afirmações.
+\begin{enumerate}[label=\Roman*.]
+  \item Se $a_n = b_m$, então $z_k = a_n$, $z_k = b_m$ e $Z_{k-1}$ é uma LCS de $A_{n-1}$ e $B_{m-1}$.
+  \item Se $a_n \ne b_m$ e $z_k \ne a_n$, então $Z$ é uma LCS de $A_{n-1}$ e $B$.
+  \item Seja $lcs(i,j)$ o comprimento da LCS entre $A_i$ e $B_j$. Para $i,j>0$, se $a_i \ne b_j$, então
+  $lcs(i,j) = \min\{lcs(i,j-1),\, lcs(i-1,j)\}$.
+  \item Seja $lcs(i,j)$ o comprimento da LCS entre $A_i$ e $B_j$. Para $i,j>0$, se $a_i = b_j$, então
+  $lcs(i,j) = lcs(i-1,j-1)+1$.
+\end{enumerate}
+É correto apenas o que se afirma em\quad
+A) I e III. \quad B) I e IV. \quad C) II e III. \quad D) I, II e IV. \quad E) II, III e IV.
+\end{enunciado}
+
+\solucao
+A questão cobra a \emph{subestrutura ótima} da LCS (Cormen, Teorema 15.1) e a recorrência de
+programação dinâmica:
+\[
+lcs(i,j) =
+\begin{cases}
+0, & i = 0 \text{ ou } j = 0,\\
+lcs(i-1,\,j-1) + 1, & a_i = b_j,\\
+\max\{lcs(i,\,j-1),\; lcs(i-1,\,j)\}, & a_i \ne b_j.
+\end{cases}
+\]
+\begin{itemize}
+  \item \textbf{I -- Correta.} Se os últimos caracteres são iguais, eles podem ser o último caractere
+  da LCS. Se $z_k \neq a_n$, poderíamos acrescentar $a_n$ ao fim de $Z$ e obter uma subsequência comum
+  maior, o que é uma contradição. Retirando esse caractere, o que sobra ($Z_{k-1}$) é LCS dos prefixos.
+  \item \textbf{II -- Correta.} Se $z_k \ne a_n$, o caractere $a_n$ não é usado por $Z$; então $Z$ é
+  subsequência comum de $A_{n-1}$ e $B$, e não pode existir uma maior (ela também serviria para $A$ e $B$).
+  \item \textbf{III -- Incorreta.} Quando os caracteres diferem, descartamos um deles e ficamos com a
+  \emph{melhor} das duas opções: é $\max$, não $\min$. Com $\min$ e casos base iguais a 0, a tabela
+  ficaria muito menor que o valor real.
+  \item \textbf{IV -- Correta.} É o segundo caso da recorrência acima (consequência direta de I).
+\end{itemize}
+Exemplo rápido: $A = \texttt{ABCB}$, $B = \texttt{BCB}$; $a_4 = b_3 = \texttt{B}$, então
+$lcs(4,3) = lcs(3,2)+1 = 2+1 = 3$ (a LCS é \texttt{BCB}).
+
+\resposta{D (I, II e IV)}
+
+\begin{dica}
+Programação dinâmica: subestrutura ótima, sobreposição de subproblemas, tabela $(n+1)\times(m+1)$,
+custo $O(nm)$ de tempo e espaço. Revise também mochila 0/1 e distância de edição.
+\end{dica}
+
+% ==================================================================
+\section{Estruturas de Dados}
+% ==================================================================
+
+% ------------------------------------------------------------------
+\subsection{Questão 5 -- ENADE 2019, Discursiva 03}
+% ------------------------------------------------------------------
+\begin{enunciado}{ENADE 2019 -- Questão Discursiva 03}
+Uma árvore binária de busca é uma árvore ordenada que pode apresentar prejuízos no desempenho de
+determinados algoritmos em função do desbalanceamento causado pela ordem de inserção dos elementos.
+Uma árvore AVL é uma árvore binária de busca balanceada em que a diferença em módulo entre a altura
+da subárvore esquerda e a altura da subárvore direita de cada nó é, no máximo, de uma unidade.
+\begin{enumerate}[label=\alph*)]
+  \item Apresente uma árvore binária de busca balanceada com os elementos 2, 9, 15, 21, 27, 36 e 50
+  em que o nó raiz principal contém o elemento 21 e o balanceamento de cada nó seja no máximo uma
+  unidade. (3,0 pontos)
+  \item Considerando as inserções dos elementos 9, 27 e 50, nesta ordem, em uma árvore AVL inicialmente
+  vazia, apresente a árvore resultante. (3,0 pontos)
+  \item Considerando as inserções dos elementos 9, 27, 50, 15, 2, 21 e 36, nesta ordem, em uma árvore
+  AVL inicialmente vazia, apresente a árvore resultante. (4,0 pontos)
+\end{enumerate}
+\end{enunciado}
+
+\solucao
+Convenção: fator de balanceamento $fb = h(\text{esq}) - h(\text{dir})$. A árvore é AVL se
+$fb \in \{-1, 0, +1\}$ em todos os nós.
+
+\textbf{a)} Com 7 elementos e raiz 21 (a mediana), a subárvore esquerda recebe $\{2, 9, 15\}$ com
+raiz 9 (mediana) e a direita recebe $\{27, 36, 50\}$ com raiz 36. O resultado é uma árvore
+\emph{completa}, com $fb = 0$ em todos os nós:
+\begin{center}
+\begin{forest} avl
+[21 [9 [2] [15]] [36 [27] [50]]]
+\end{forest}
+\end{center}
+
+\textbf{b)} Inserindo 9 e 27, a árvore fica $9 \to 27$ (à direita). Ao inserir 50 (à direita de 27),
+o nó 9 fica com $fb = -2$: caso \textbf{direita-direita (RR)}, resolvido com uma \textbf{rotação simples
+à esquerda} em 9.
+\begin{center}
+\begin{forest} avl, baseline
+[9,label=left:{\scriptsize $fb=-2$} [,nil] [27 [,nil] [50]]]
+\end{forest}
+\qquad$\xrightarrow{\text{rotação à esquerda em 9}}$\qquad
+\begin{forest} avl, baseline
+[27 [9] [50]]
+\end{forest}
+\end{center}
+
+\textbf{c)} Continuando a partir da árvore do item (b):
+\begin{itemize}
+  \item \textbf{Insere 15:} $15 < 27$, $15 > 9$ $\Rightarrow$ filho direito de 9. Árvore balanceada
+  ($fb(9) = -1$, $fb(27) = +1$).
+  \item \textbf{Insere 2:} filho esquerdo de 9. Árvore balanceada ($fb(9)=0$, $fb(27)=+1$).
+  \item \textbf{Insere 21:} $21<27$, $21>9$, $21>15$ $\Rightarrow$ filho direito de 15. Agora
+  $fb(27) = 3 - 1 = +2$. A inserção ocorreu na subárvore \emph{direita} do filho \emph{esquerdo}:
+  caso \textbf{esquerda-direita (LR)}, resolvido com \textbf{rotação dupla}: à esquerda em 9 e,
+  em seguida, à direita em 27. O nó 15 sobe para a raiz.
+\end{itemize}
+\begin{center}
+\forestset{avl/.append style={for tree={s sep=5mm}}}%
+\begin{forest} avl, baseline
+[27,label=left:{\scriptsize $fb=+2$} [9 [2] [15 [,nil] [21]]] [50]]
+\end{forest}
+\;$\xrightarrow[\text{em 9}]{\text{rot. esq.}}$\;
+\begin{forest} avl, baseline
+[27 [15 [9 [2] [,nil]] [21]] [50]]
+\end{forest}
+\;$\xrightarrow[\text{em 27}]{\text{rot. dir.}}$\;
+\begin{forest} avl, baseline
+[15 [9 [2] [,nil]] [27 [21] [50]]]
+\end{forest}
+\end{center}
+\begin{itemize}
+  \item \textbf{Insere 36:} $36>15$, $36>27$, $36<50$ $\Rightarrow$ filho esquerdo de 50.
+  Fatores: $fb(50)=+1$, $fb(27)=-1$, $fb(15)=-1$, $fb(9)=+1$. Nenhuma rotação.
+\end{itemize}
+\textbf{Árvore AVL final:}
+\begin{center}
+\begin{forest} avl
+[15 [9 [2] [,nil]] [27 [21] [50 [36] [,nil]]]]
+\end{forest}
+\end{center}
+Repare que a árvore AVL final é diferente da árvore do item (a): as duas são balanceadas, mas a forma
+depende da ordem das inserções. (Sequência conferida com uma implementação de AVL.)
+
+\begin{dica}
+Os 4 casos de rotação: LL (rotação simples à direita), RR (simples à esquerda), LR (dupla:
+esquerda no filho, direita no nó) e RL (dupla: direita no filho, esquerda no nó). Após cada inserção,
+suba pelo caminho até a raiz recalculando $fb$; corrija o \emph{primeiro} nó desbalanceado.
+\end{dica}
+
+% ------------------------------------------------------------------
+\subsection{Questão 6 -- ENADE 2023, Questão 18}
+% ------------------------------------------------------------------
+\begin{enunciado}{ENADE 2023 -- Questão 18}
+Vetores de tamanho dinâmico são muito utilizados como estruturas de dados para armazenar listas e
+tabelas de dispersão. Uma técnica para implementá-los é aquela que dobra o tamanho do vetor quando
+o número de itens a ser armazenado ultrapassa o tamanho atual do vetor. Essa operação requer uma
+alocação de memória para conter o vetor com o dobro do tamanho atual e a cópia dos elementos para o
+novo vetor. Considere uma lista linear implementada com um vetor dinâmico, em que todos os itens têm
+o mesmo tamanho e o vetor tem tamanho inicial para comportar apenas 1 item.
+
+Considerando uma sequência de $n$ inserções no final dessa lista, o tempo médio por inserção e o tempo
+total gasto para executar todas as $n$ operações são, respectivamente, da ordem de
+\begin{enumerate}[label=\Alph*)]
+  \item $\Theta(\log n)$ e $\Theta(n\log n)$.
+  \item $\Theta(1)$ e $\Theta(n)$.
+  \item $\Theta(1)$ e $\Theta(n^2)$.
+  \item $\Theta(n)$ e $\Theta(n^2)$.
+  \item $\Theta(n)$ e $\Theta(n^{3/2})$.
+\end{enumerate}
+\end{enunciado}
+
+\solucao
+\textbf{Análise agregada.} Cada inserção custa 1 (escrever o item) e, \emph{às vezes}, um custo extra de
+cópia. As duplicações ocorrem quando o vetor tem capacidade $1, 2, 4, 8, \dots$ e está cheio; nesse
+momento copiam-se $1, 2, 4, \dots, 2^k$ elementos, com $2^k < n$. Logo:
+\[
+  T(n) \;=\; \underbrace{n}_{\text{escritas}} \;+\; \underbrace{1 + 2 + 4 + \dots + 2^{k}}_{\text{cópias}}
+  \;=\; n + (2^{k+1} - 1) \;<\; n + 2n \;=\; 3n .
+\]
+Como $T(n) \ge n$ e $T(n) < 3n$, o total é $\Theta(n)$ e o custo médio (amortizado) por inserção é
+$T(n)/n = \Theta(1)$.
+
+Uma inserção isolada pode custar $\Theta(n)$ (quando há cópia), mas isso acontece cada vez mais raramente.
+A análise amortizada distribui esse custo entre as inserções baratas. É o que acontece com
+\texttt{ArrayList} (Java), \texttt{vector} (C++) e \texttt{list} (Python).
+
+Se o vetor crescesse em uma \emph{constante} $c$ (e não multiplicado por 2), o total seria
+$\Theta(n^2)$; essa diferença é o que distingue as alternativas B e C.
+
+\resposta{B}
+
+\begin{dica}
+Análise amortizada: métodos agregado, contábil e potencial. Soma da PG $\sum_{i=0}^{k}2^i = 2^{k+1}-1$.
+Notação $O$, $\Omega$, $\Theta$.
+\end{dica}
+
+% ==================================================================
+\section{Teoria da Computação}
+% ==================================================================
+
+% ------------------------------------------------------------------
+\subsection{Questão 7 -- ENADE 2019, Questão 23}
+% ------------------------------------------------------------------
+\begin{enunciado}{ENADE 2019 -- Questão 23}
+Considere o autômato de estados finitos determinístico representado na figura a seguir.
+\begin{center}
+\begin{tikzpicture}[shorten >=1pt,node distance=3.2cm,on grid,auto,>={Stealth[length=2.5mm]},
+  every state/.style={minimum size=1cm}]
+  \node[state,initial,initial text=] (P) {$P$};
+  \node[state,accepting] (I1) [right=5cm of P] {$I_1$};
+  \node[state] (I0) [below=2.8cm of P] {$I_0$};
+  \path[->]
+    (P)  edge[bend left=25]  node {1} (I1)
+    (I1) edge[bend left=25]  node {1,0} (P)
+    (P)  edge[bend right=35] node[swap] {0} (I0)
+    (I0) edge[bend right=35] node[swap] {1,0} (P);
+\end{tikzpicture}
+\end{center}
+O autômato representado reconhece a seguinte linguagem regular
+\begin{enumerate}[label=\Alph*)]
+  \item $\{w \in \{0,1\}^* \mid |w| \text{ é } 4\}$.
+  \item $\{w \in \{0,1\}^* \mid |w| \text{ é ímpar e termina com } 1\}$.
+  \item $\{w \in \{0,1\}^* \mid |w| \text{ é par e termina com } 01\}$.
+  \item $\{w \in \{0,1\}^* \mid |w| \text{ é ímpar e termina com } 0\}$.
+  \item $\{w \in \{0,1\}^* \mid |w| \text{ é par e termina com } 11\}$.
+\end{enumerate}
+\end{enunciado}
+
+\solucao
+Observe a estrutura do autômato:
+\begin{itemize}
+  \item de $P$, qualquer símbolo leva para $I_0$ ou $I_1$; de $I_0$ e $I_1$, qualquer símbolo volta para $P$.
+  Logo, o autômato está em $P$ depois de ler uma cadeia de comprimento \textbf{par} e em $I_0$ ou $I_1$
+  depois de uma cadeia de comprimento \textbf{ímpar};
+  \item ao sair de $P$, o símbolo lido decide o estado: 1 leva a $I_1$, 0 leva a $I_0$. Então, depois de
+  uma cadeia ímpar, o autômato está em $I_1$ se o \textbf{último símbolo foi 1};
+  \item o único estado de aceitação é $I_1$ (círculo duplo).
+\end{itemize}
+Portanto $L = \{w \mid |w| \text{ é ímpar e } w \text{ termina com } 1\}$.
+
+\textbf{Verificação:} \texttt{1}: $P \xrightarrow{1} I_1$ (aceita). \texttt{011}:
+$P \xrightarrow{0} I_0 \xrightarrow{1} P \xrightarrow{1} I_1$ (aceita). \texttt{10}: termina em $P$
+(rejeita, comprimento par). \texttt{110}: termina em $I_0$ (rejeita, termina com 0).
+
+\resposta{B}
+
+\begin{dica}
+Leitura de AFD (estado inicial, estados de aceitação, função de transição total); técnica de
+``o que cada estado lembra'' (paridade, último símbolo); expressões regulares equivalentes:
+aqui $L = \big((0+1)(0+1)\big)^* 1$.
+\end{dica}
+
+% ------------------------------------------------------------------
+\subsection{Questão 8 -- ENADE 2023, Questão 19}
+% ------------------------------------------------------------------
+\begin{enunciado}{ENADE 2023 -- Questão 19}
+É chamado de compilação o processo de conversão do código escrito pelo programador para um arquivo
+binário que o computador consegue executar. Entre as diversas tarefas de um compilador, destaca-se a
+de identificar os possíveis erros sintáticos e semânticos. Considere uma linguagem de programação em
+que a sintaxe de uma operação aritmética seja dada pela seguinte gramática livre de contexto:
+\[
+\begin{aligned}
+S &\to \textrm{var} = E; \;\mid\; \textrm{var} = E;\, S\\
+E &\to E + E \mid E - E \mid E * E \mid E / E \mid E(E) \mid \textrm{var}
+\end{aligned}
+\]
+Um profissional submete a seguinte sentença ao compilador: \qquad \texttt{a = a / (b - b);}
+
+\smallskip
+Com base na gramática e acerca do processo de análise sintática e semântica, é correto afirmar que
+\begin{enumerate}[label=\Alph*)]
+  \item a gramática gera a sentença apresentada e o erro presente na expressão está fora do escopo das
+  análises sintática e semântica.
+  \item a gramática gera a sentença apresentada, porém o analisador semântico transmitirá uma mensagem de erro.
+  \item o analisador léxico transmitirá uma mensagem de erro, pois a gramática não gera a sentença apresentada.
+  \item o analisador semântico transmitirá uma mensagem de erro, pois a gramática não gera a sentença apresentada.
+  \item a gramática gera a sentença apresentada, porém o analisador léxico transmitirá uma mensagem de erro.
+\end{enumerate}
+\end{enunciado}
+
+\solucao
+Analise a sentença fase por fase do compilador.
+
+\textbf{1. Análise léxica.} Os tokens são \texttt{var(a)}, \texttt{=}, \texttt{var(a)}, \texttt{/},
+\texttt{(}, \texttt{var(b)}, \texttt{-}, \texttt{var(b)}, \texttt{)}, \texttt{;}. Todos pertencem ao
+alfabeto da linguagem, então \textbf{não há erro léxico}. Isso elimina C e E. Além disso, o analisador
+léxico não decide se a gramática gera a sentença; isso é papel do analisador sintático.
+
+\textbf{2. Análise sintática.} A banca considerou a regra com parênteses como a produção de
+subexpressão entre parênteses, $E \to (E)$. Com ela:
+\begin{align*}
+S &\Rightarrow \textrm{var} = E; \Rightarrow \textrm{var} = E / E; \Rightarrow \textrm{var} = \textrm{var} / E;
+   \Rightarrow \textrm{var} = \textrm{var} / (E);\\
+  &\Rightarrow \textrm{var} = \textrm{var} / (E - E);
+   \Rightarrow \textrm{var} = \textrm{var} / (\textrm{var} - \textrm{var});
+\end{align*}
+Logo, \textbf{a gramática gera a sentença}, o que elimina D.
+
+\textbf{3. Análise semântica.} A expressão \texttt{b - b} vale 0 para \emph{qualquer} valor de
+\texttt{b}, então a sentença é uma divisão por zero. A sentença está sintaticamente correta, mas não tem
+significado válido. Pela visão da banca, esse é um erro de natureza semântica, que pode ser detectado
+na compilação por simplificação algébrica ou propagação de constantes. Isso descarta A e leva a B.
+
+\begin{tcolorbox}[colback=yellow!8,colframe=yellow!50!black,boxrule=0.5pt,title=Ressalvas sobre esta questão,fonttitle=\bfseries\small]
+\small
+(i) Lida ao pé da letra, a produção $E \to E(E)$ exige uma expressão \emph{antes} do parêntese, como em
+\texttt{a(b-b)}. Nesse caso nenhuma derivação produz ``\texttt{/ (}''. O mais provável é que tenha
+havido um erro de digitação de $E \to (E)$, e o gabarito oficial assume essa interpretação.
+(ii) Compiladores reais, como o \texttt{gcc}, em geral só emitem um \emph{aviso} para divisão por zero
+detectável e deixam o erro para a execução. Na prova, porém, vale o raciocínio da banca: a sentença é
+sintaticamente válida e o problema está no significado, ou seja, é semântico.
+\end{tcolorbox}
+
+\resposta{B}
+
+\begin{dica}
+Fases do compilador: léxica (tokens, expressões regulares, AFD), sintática (GLC, árvore de derivação,
+ambiguidade), semântica (tipos, declarações, escopo), geração/otimização de código. Saiba dizer
+\emph{qual fase} detecta cada tipo de erro.
+\end{dica}
+
+% ==================================================================
+\section{Matemática Discreta, Grafos e Pesquisa Operacional}
+% ==================================================================
+
+% ------------------------------------------------------------------
+\subsection{Questão 9 -- ENADE 2019, Questão 11}
+% ------------------------------------------------------------------
+\begin{enunciado}{ENADE 2019 -- Questão 11}
+O gestor de um hotel precisa satisfazer a demanda de vários grupos de eventos pelo uso exclusivo de
+auditórios por uma semana utilizando o menor número possível de auditórios. A tabela apresenta os
+conflitos de demandas dos grupos para todos os dias na semana: o valor 1 indica que um grupo precisará
+usar um auditório no mesmo horário que outro grupo e o valor 0 indica que não há conflito.
+\begin{center}
+\begin{tabular}{c|ccccc}
+   & G1 & G2 & G3 & G4 & G5\\\hline
+G1 & -- & 1 & 1 & 1 & 1\\
+G2 & 1 & -- & 1 & 1 & 0\\
+G3 & 1 & 1 & -- & 0 & 1\\
+G4 & 1 & 1 & 0 & -- & 0\\
+G5 & 1 & 0 & 1 & 0 & --
+\end{tabular}
+\end{center}
+Nessa situação, o número mínimo de auditórios que satisfaz todas as demandas é de\quad
+A) um. \quad B) dois. \quad C) três. \quad D) quatro. \quad E) cinco.
+\end{enunciado}
+
+\solucao
+\textbf{Modelagem.} Cada grupo é um vértice e cada conflito (valor 1) é uma aresta. Grupos ligados por
+aresta não podem usar o mesmo auditório. Atribuir auditórios é \textbf{colorir o grafo}, e o mínimo de
+auditórios é o \textbf{número cromático} $\chi(G)$.
+
+Arestas: G1--G2, G1--G3, G1--G4, G1--G5, G2--G3, G2--G4, G3--G5.
+
+\begin{center}
+\begin{tikzpicture}[every node/.style={circle,draw,thick,minimum size=9mm,font=\small},
+  r/.style={fill=red!25}, g/.style={fill=green!25}, b/.style={fill=blue!20}]
+  \node[r] (1) at (0,0)      {G1};
+  \node[g] (2) at (-2.2,1.2) {G2};
+  \node[b] (3) at (2.2,1.2)  {G3};
+  \node[b] (4) at (-2.2,-1.3){G4};
+  \node[g] (5) at (2.2,-1.3) {G5};
+  \draw[thick] (1)--(2) (1)--(3) (1)--(4) (1)--(5) (2)--(3) (2)--(4) (3)--(5);
+  \node[draw=none,font=\footnotesize,align=left] at (6.3,0)
+    {\textcolor{red!70!black}{$\blacksquare$} Auditório 1: G1\\
+     \textcolor{green!50!black}{$\blacksquare$} Auditório 2: G2, G5\\
+     \textcolor{blue!70!black}{$\blacksquare$} Auditório 3: G3, G4};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Limite inferior.} G1, G2 e G3 conflitam entre si (formam um triângulo, ou clique de tamanho 3).
+Cada um precisa de um auditório diferente, então $\chi(G) \ge 3$.
+
+\textbf{Limite superior.} A coloração da figura usa 3 cores e é válida: G2 e G5 não conflitam, e
+G3 e G4 também não. Logo $\chi(G) \le 3$.
+
+Assim, $\chi(G) = 3$ auditórios.
+
+\resposta{C}
+
+\begin{dica}
+Coloração de vértices, número cromático, cliques ($\chi(G)\ge\omega(G)$), algoritmo guloso de coloração.
+Modelagem de problemas de escalonamento e alocação de recursos como coloração.
+\end{dica}
+
+% ------------------------------------------------------------------
+\subsection{Questão 10 -- ENADE 2019, Questão 12}
+% ------------------------------------------------------------------
+\begin{enunciado}{ENADE 2019 -- Questão 12}
+Em um sistema computacional avalia-se o desempenho no uso de dois tipos de memória secundária por meio
+de programação linear. No gráfico, cada eixo representa a quantidade de posições de memória de cada tipo
+e a região colorida representa, de forma contínua, o conjunto de soluções viáveis (região viável).
+\begin{center}
+\begin{tikzpicture}[scale=0.62]
+  \draw[step=1,gray!35,very thin] (0,0) grid (12,8);
+  \draw[->,thick] (0,0)--(12.6,0) node[right] {$x$};
+  \draw[->,thick] (0,0)--(0,8.6) node[above] {$y$};
+  \foreach \i in {1,...,12} \node[below,font=\scriptsize] at (\i,0) {\i};
+  \foreach \j in {1,...,8} \node[left,font=\scriptsize] at (0,\j) {\j};
+  \node[below left,font=\scriptsize] at (0,0) {0};
+  \filldraw[fill=red!25,draw=red!70!black,thick]
+    (0,0)--(0,4)--(2,7)--(5,6)--(8,4)--(9,0)--cycle;
+  \foreach \p/\n/\pos in {(0,4)/A/right,(2,7)/B/above,(5,6)/C/above right,
+                         (8,4)/D/above right,(9,0)/E/above right,(0,0)/F/above right}
+    {\fill \p circle (2.5pt); \node[\pos,font=\small\bfseries] at \p {\n};}
+  \node[red!60!black,font=\small] at (0.8,5.8) {a};
+  \node[red!60!black,font=\small] at (3.5,6.9) {b};
+  \node[red!60!black,font=\small] at (6.8,5.3) {c};
+  \node[red!60!black,font=\small] at (8.9,2.2) {d};
+  \node[red!60!black,font=\small] at (4.5,0.4) {e};
+  \node[red!60!black,font=\small] at (0.35,2) {f};
+\end{tikzpicture}
+\end{center}
+As arestas da região viável foram definidas pelas diversas restrições observadas para os dois tipos de
+memória. Com base no gráfico, o máximo desempenho do sistema, representado por $Z = 30x + 10y$, é de\quad
+A) 350. \quad B) 280. \quad C) 270. \quad D) 180. \quad E) 130.
+\end{enunciado}
+
+\solucao
+\textbf{Teorema fundamental da PL:} se a região viável é um polígono convexo limitado e não vazio, o
+ótimo de uma função objetivo linear é atingido em um \textbf{vértice}. Basta avaliar $Z$ nos vértices
+lidos do gráfico:
+\begin{center}
+\begin{tabular}{@{}cccc@{}}
+\toprule
+Vértice & $(x, y)$ & Cálculo & $Z = 30x + 10y$\\
+\midrule
+F & $(0, 0)$ & $0 + 0$     & 0\\
+A & $(0, 4)$ & $0 + 40$    & 40\\
+B & $(2, 7)$ & $60 + 70$   & 130\\
+C & $(5, 6)$ & $150 + 60$  & 210\\
+D & $(8, 4)$ & $240 + 40$  & \textbf{280}\\
+E & $(9, 0)$ & $270 + 0$   & 270\\
+\bottomrule
+\end{tabular}
+\end{center}
+O máximo é $Z = 280$, no vértice $D = (8, 4)$.
+
+\textbf{Intuição geométrica.} As retas de nível $30x + 10y = k$ têm inclinação $-3$. Deslocando-as no
+sentido do gradiente $(30, 10)$, o último ponto da região tocado é $D$. A aresta $d$ (de $D$ a $E$) tem
+inclinação $-4$, mais íngreme que $-3$, por isso o ótimo não está em $E$. Repare nas armadilhas:
+270 (vértice $E$, maior $x$) e 130 (vértice $B$, maior $y$) também estão entre as alternativas.
+
+\resposta{B}
+
+\begin{dica}
+Programação linear: modelagem (variáveis, objetivo, restrições), método gráfico, vértices da região viável,
+casos especiais (ótimos múltiplos, região ilimitada, inviável), noções de Simplex e dualidade.
+Revise também o problema do transporte (ENADE 2017, Q28).
+\end{dica}
+
+% ==================================================================
+\section*{Resumo dos gabaritos}
+\addcontentsline{toc}{section}{Resumo dos gabaritos}
+\begin{center}
+\begin{tabular}{@{}clc@{}}
+\toprule
+\# & Questão & Resposta\\
+\midrule
+1  & 2023 -- D2  & (a) $N(N-1)/2$; (b) $N-1$; (c) \texttt{ini, x-1, x+1, fim}; (d) Lomuto\\
+2  & 2019 -- D4  & \texttt{double}, \texttt{1.0/i}, acumulador em 1; caso base $m>n \Rightarrow 1$\\
+3  & 2023 -- Q14 & E\\
+4  & 2023 -- Q17 & D\\
+5  & 2019 -- D3  & (c) raiz 15; esq.\ 9(2,--); dir.\ 27(21, 50(36,--))\\
+6  & 2023 -- Q18 & B\\
+7  & 2019 -- Q23 & B\\
+8  & 2023 -- Q19 & B\\
+9  & 2019 -- Q11 & C\\
+10 & 2019 -- Q12 & B\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}

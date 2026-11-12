@@ -310,3 +310,13 @@ A Formação Geral é igual para todos os cursos e não depende de conteúdo té
 | 2 | 2017 | D1, D2, Q01–Q08 |
 | 3 | 2019 | D1, D2, Q01\*–Q08 |
 | 4 | 2023 | D1, Q01–Q09 |
+
+---
+
+## 8. Materiais de estudo
+
+Listas de questões que acompanham o guia semanal (seção 7). Os PDFs ficam em `material/`.
+
+| Semana | Material | Descrição |
+|:------:|----------|-----------|
+| 2 | [Material 2](material/semana2/enade2.pdf) | Lista com 10 questões (3 discursivas e 7 objetivas) das provas de 2014 a 2023 sobre circuitos e eletrônica, sistemas digitais, sistemas embarcados e sistemas operacionais. Cobre mapa de Karnaugh, circuitos CC e CA, conversor A/D, microcontroladores, amplificadores operacionais e filtros ativos, demultiplexador, porta de I/O e escalonamento *Round Robin*. As respostas estão no final. |
